@@ -87,6 +87,19 @@
                 return targetObj;
             }
 
+            function shiftX(vertexObj, amount)
+            {
+                targetObj = Array();
+                for (var i in vertexObj) {
+                    v = vertexObj[i];
+                    targetObj[i] = Array();
+                    targetObj[i][2] = v[2] + amount;
+                    targetObj[i][3] = v[3];
+                    targetObj[i][4] = v[4];
+                }
+                return targetObj;
+            }
+
             function shiftY(vertexObj, amount)
             {
                 targetObj = Array();
@@ -99,6 +112,20 @@
                 }
                 return targetObj;
             }
+
+            function shiftZ(vertexObj, amount)
+            {
+                targetObj = Array();
+                for (var i in vertexObj) {
+                    v = vertexObj[i];
+                    targetObj[i] = Array();
+                    targetObj[i][2] = v[2];
+                    targetObj[i][3] = v[3];
+                    targetObj[i][4] = v[4] + amount;
+                }
+                return targetObj;
+            }
+            
             
             function renderVertex(vertexObj, canvasName)
             {
@@ -194,7 +221,7 @@
             function loop() {
                 setTimeout(function ()
                 {
-                    rotate = rotateZ(rotateY(rotateX(vertex, rotateAngleX), rotateAngleY), rotateAngleZ);
+                    rotate = rotateZ(rotateX(rotateY(vertex, rotateAngleY), rotateAngleX), rotateAngleZ);
                     
                     deleteCanvas('screen_vertex');
                     renderVertex(rotate, 'screen_vertex');
@@ -206,11 +233,11 @@
                     if (rotateAngleX >= sinMax) {
                         rotateAngleX -= sinMax;
                     }
-                    rotateAngleY += 3;
+                    rotateAngleY += 2;
                     if (rotateAngleY >= sinMax) {
                         rotateAngleY -= sinMax;
                     }
-                    rotateAngleZ += 2;
+                    rotateAngleZ += 3;
                     if (rotateAngleZ >= sinMax) {
                         rotateAngleZ -= sinMax;
                     }
