@@ -3,19 +3,54 @@
     <head>
         <title>Canvas/Vektor</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     </head>
     <body>
-        <canvas id="screen"></canvas>
-        <script language="text/javascript" src="torus.js"></script>
+        <div>
+            <canvas id="screen_vertex"></canvas>
+            <canvas id="screen_polygon"></canvas>
+        </div>
+        <script src="torus.js"></script>
         <script>
-            var screen = document.getElementById('screen').getContext('2d');
-            screen.fillStyle = '#00f';
-            screen.beginPath();
-            screen.moveTo(0, 0);
-            screen.lineTo(100, 50);
-            screen.lineTo(50, 100);
-            screen.closePath();
-            screen.fill();
+            var scale = 5;              // normalize object size
+            var horizontalShift = 150;  // horizontal center
+            var verticalShift = 200;    // vertical center
+            
+            // -- vertex display
+            var screen_vertex = $('#screen_vertex')[0].getContext('2d');
+            screen_vertex.fillStyle = '#00f';            
+            for (var i in vertex) {
+                v = vertex[i];
+                x = Math.round(v[2] / scale);
+                y = Math.round(v[3] / scale);
+                screen_vertex.fillRect(x + horizontalShift, y + verticalShift, 2, 2);
+            }
+
+            // --- polygon display
+            var screen_polygon = $('#screen_polygon')[0].getContext('2d');
+            screen_polygon.fillStyle = '#f00';            
+            for (var i in face) {
+                f = face[i];
+                a = f[2];
+                b = f[3];
+                c = f[4];
+                vertexA = vertex[a];
+                vertexB = vertex[b];
+                vertexC = vertex[c];
+                x1 = vertexA[2] / scale;
+                y1 = vertexA[3] / scale;
+                x2 = vertexB[2] / scale;
+                y2 = vertexB[3] / scale;
+                x3 = vertexC[2] / scale;
+                y3 = vertexC[3] / scale;
+                screen_polygon.beginPath();
+                screen_polygon.moveTo(x1 + horizontalShift, y1 + verticalShift);
+                screen_polygon.lineTo(x2 + horizontalShift, y2 + verticalShift);
+                screen_polygon.lineTo(x3 + horizontalShift, y3 + verticalShift);
+                screen_polygon.closePath();
+                screen_polygon.fill();
+            }
+            
         </script>
     </body>
 </html>
