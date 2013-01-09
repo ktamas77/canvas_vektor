@@ -69,6 +69,24 @@
                 return targetObj;
             }
             
+            function rotateZ(vertexObj, angle)
+            {   
+                targetObj = Array();
+                for (var i in vertexObj) {
+                    v = vertexObj[i];
+                    sourceX = v[2];
+                    sourceY = v[3];
+                    sourceZ = v[4];
+                    sinAngle = sinA[angle];
+                    cosAngle = cosA[angle];
+                    targetObj[i] = Array();
+                    targetObj[i][2] = Math.floor(((cosAngle * sourceX) + (sinAngle * sourceY)) / multiplier);
+                    targetObj[i][3] = Math.floor(((sinAngle * sourceX) - (cosAngle * sourceY)) / multiplier);
+                    targetObj[i][4] = sourceZ;
+                }
+                return targetObj;
+            }
+
             function shiftY(vertexObj, amount)
             {
                 targetObj = Array();
@@ -176,7 +194,7 @@
             function loop() {
                 setTimeout(function ()
                 {
-                    rotate = rotateY(rotateX(vertex, rotateAngleX), rotateAngleY);
+                    rotate = rotateZ(rotateY(rotateX(vertex, rotateAngleX), rotateAngleY), rotateAngleZ);
                     
                     deleteCanvas('screen_vertex');
                     renderVertex(rotate, 'screen_vertex');
@@ -191,6 +209,10 @@
                     rotateAngleY += 3;
                     if (rotateAngleY >= sinMax) {
                         rotateAngleY -= sinMax;
+                    }
+                    rotateAngleZ += 2;
+                    if (rotateAngleZ >= sinMax) {
+                        rotateAngleZ -= sinMax;
                     }
                     loop();
                 }, 10);
