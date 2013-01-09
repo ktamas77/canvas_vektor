@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Canvas/Vektor</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+    <body>
+        <canvas id="screen"></canvas>
+        <script>
+            var screen = document.getElementById('screen').getContext('2d');
+            screen.fillStyle = '#00f';
+            screen.beginPath();
+            screen.moveTo(0, 0);
+            screen.lineTo(100, 50);
+            screen.lineTo(50, 100);
+            screen.closePath();
+            screen.fill();
+        </script>
+    </body>
+</html>
