@@ -7,21 +7,25 @@
     </head>
     <body>
         <div>
-            <canvas id="screen_vertex"></canvas>
-            <canvas id="screen_polygon"></canvas>
-            <canvas id="screen_mesh"></canvas>
+            <canvas id="screen_vertex" width="300"" height="300"></canvas>
+            <canvas id="screen_polygon" width="300" height="300"></canvas>
+            <canvas id="screen_mesh" width="300" height="300"></canvas>
         </div>
         <script src="torus.js"></script>
         <script>            
             var scale = 5;              // normalize object size
             var horizontalShift = 150;  // horizontal center
-            var verticalShift = 200;    // vertical center
+            var verticalShift = 150;    // vertical center
             
             var sinMax = 1024;
             var multiplier = 32000;
             var sinA = Array();
             var cosA = Array();
-            
+
+            var rotateAngleX = 0;
+            var rotateAngleY = 0;
+            var rotateAngleZ = 0;
+
             // -- init rotation arrays
             var pipi = (sinMax/2)/Math.PI;
             for (var i = 0;i < sinMax; i++) {
@@ -29,11 +33,55 @@
                 cosA[i] = Math.floor(Math.cos(i/(pipi))*multiplier);
             }
             
-            function rotateX(sourceObj, angle)
-            {
+            function rotateX(vertexObj, angle)
+            {   
+                targetObj = Array();
+                for (var i in vertexObj) {
+                    v = vertexObj[i];
+                    sourceX = v[2];
+                    sourceY = v[3];
+                    sourceZ = v[4];
+                    sinAngle = sinA[angle];
+                    cosAngle = cosA[angle];
+                    targetObj[i] = Array();
+                    targetObj[i][2] = sourceX;
+                    targetObj[i][3] = Math.floor(((cosAngle * sourceY) + (sinAngle * sourceZ)) / multiplier);
+                    targetObj[i][4] = Math.floor(((sinAngle * sourceY) - (cosAngle * sourceZ)) / multiplier);
+                }
                 return targetObj;
             }
-
+            
+            function rotateY(vertexObj, angle)
+            {   
+                targetObj = Array();
+                for (var i in vertexObj) {
+                    v = vertexObj[i];
+                    sourceX = v[2];
+                    sourceY = v[3];
+                    sourceZ = v[4];
+                    sinAngle = sinA[angle];
+                    cosAngle = cosA[angle];
+                    targetObj[i] = Array();
+                    targetObj[i][2] = Math.floor(((cosAngle * sourceX) + (sinAngle * sourceZ)) / multiplier);
+                    targetObj[i][3] = sourceY;
+                    targetObj[i][4] = Math.floor(((sinAngle * sourceX) - (cosAngle * sourceZ)) / multiplier);
+                }
+                return targetObj;
+            }
+            
+            function shiftY(vertexObj, amount)
+            {
+                targetObj = Array();
+                for (var i in vertexObj) {
+                    v = vertexObj[i];
+                    targetObj[i] = Array();
+                    targetObj[i][2] = v[2];
+                    targetObj[i][3] = v[3] + amount;
+                    targetObj[i][4] = v[4];
+                }
+                return targetObj;
+            }
+            
             function renderVertex(vertexObj, canvasName)
             {
                 canvas = $('#' + canvasName)[0].getContext('2d');
@@ -42,22 +90,22 @@
                     v = vertexObj[i];
                     x = Math.round(v[2] / scale);
                     y = Math.round(v[3] / scale);
-                    canvas.fillRect(x + horizontalShift, y + verticalShift, 2, 2);
+                    canvas.fillRect(x + horizontalShift, y + verticalShift, 1, 1);
                 }                
             }
             
             function renderPolygon(vertexObj, faceObj, canvasName)
             {
                 var canvas = $('#' + canvasName)[0].getContext('2d');
-                canvas.fillStyle = '#f00';            
+                            
                 for (var i in faceObj) {
                     f = faceObj[i];
                     a = f[2];
                     b = f[3];
                     c = f[4];
-                    vertexA = vertex[a];
-                    vertexB = vertex[b];
-                    vertexC = vertex[c];
+                    vertexA = vertexObj[a];
+                    vertexB = vertexObj[b];
+                    vertexC = vertexObj[c];
                     x1 = vertexA[2] / scale;
                     y1 = vertexA[3] / scale;
                     x2 = vertexB[2] / scale;
@@ -65,6 +113,7 @@
                     x3 = vertexC[2] / scale;
                     y3 = vertexC[3] / scale;
                     canvas.beginPath();
+                    canvas.fillStyle = 'rgba(' + i + ', 45, 21, 255)';
                     canvas.moveTo(x1 + horizontalShift, y1 + verticalShift);
                     canvas.lineTo(x2 + horizontalShift, y2 + verticalShift);
                     canvas.lineTo(x3 + horizontalShift, y3 + verticalShift);
@@ -117,9 +166,37 @@
                 
             }
             
-            renderVertex(vertex, 'screen_vertex');
-            renderPolygon(vertex, face, 'screen_polygon');
-            renderMesh(vertex, face, 'screen_mesh');
+            function deleteCanvas(canvasName)
+            {
+                var canvas = $('#' + canvasName)[0].getContext('2d');
+                canvas.fillStyle = '#fff';            
+                canvas.fillRect(0, 0, 600, 600);
+            }
+            
+            function loop() {
+                setTimeout(function ()
+                {
+                    rotate = rotateY(rotateX(vertex, rotateAngleX), rotateAngleY);
+                    
+                    deleteCanvas('screen_vertex');
+                    renderVertex(rotate, 'screen_vertex');
+                    deleteCanvas('screen_polygon');
+                    renderPolygon(rotate, face, 'screen_polygon');
+                    deleteCanvas('screen_mesh');
+                    renderMesh(rotate, face, 'screen_mesh');
+                    rotateAngleX += 5;
+                    if (rotateAngleX >= sinMax) {
+                        rotateAngleX -= sinMax;
+                    }
+                    rotateAngleY += 3;
+                    if (rotateAngleY >= sinMax) {
+                        rotateAngleY -= sinMax;
+                    }
+                    loop();
+                }, 10);
+            }
+            
+            loop();            
             
         </script>
     </body>
