@@ -9,6 +9,7 @@
         <div>
             <canvas id="screen_vertex"></canvas>
             <canvas id="screen_polygon"></canvas>
+            <canvas id="screen_mesh"></canvas>
         </div>
         <script src="torus.js"></script>
         <script>
@@ -49,6 +50,47 @@
                 screen_polygon.lineTo(x3 + horizontalShift, y3 + verticalShift);
                 screen_polygon.closePath();
                 screen_polygon.fill();
+            }
+            
+            // --- mesh display
+            var screen_mesh = $('#screen_mesh')[0].getContext('2d');
+            screen_mesh.fillStyle = '#0f0';            
+            screen_mesh.lineWidth = 1;
+            for (var i in face) {
+                f = face[i];
+                a = f[2];
+                b = f[3];
+                c = f[4];
+                ab = f[5];
+                bc = f[6];
+                ca = f[7];
+                vertexA = vertex[a];
+                vertexB = vertex[b];
+                vertexC = vertex[c];
+                x1 = vertexA[2] / scale;
+                y1 = vertexA[3] / scale;
+                x2 = vertexB[2] / scale;
+                y2 = vertexB[3] / scale;
+                x3 = vertexC[2] / scale;
+                y3 = vertexC[3] / scale;
+                if (ab) {
+                    screen_mesh.beginPath();
+                    screen_mesh.moveTo(x1 + horizontalShift, y1 + verticalShift);
+                    screen_mesh.lineTo(x2 + horizontalShift, y2 + verticalShift);
+                    screen_mesh.stroke();
+                }
+                if (bc) {
+                    screen_mesh.beginPath();
+                    screen_mesh.moveTo(x2 + horizontalShift, y2 + verticalShift);
+                    screen_mesh.lineTo(x3 + horizontalShift, y3 + verticalShift);
+                    screen_mesh.stroke();
+                }
+                if (ca) {
+                    screen_mesh.beginPath();
+                    screen_mesh.moveTo(x3 + horizontalShift, y3 + verticalShift);
+                    screen_mesh.lineTo(x1 + horizontalShift, y1 + verticalShift);
+                    screen_mesh.stroke();
+                }
             }
             
         </script>
