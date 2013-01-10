@@ -123,9 +123,31 @@ function renderVertex(vertexObj, canvasName)
 function renderPolygon(vertexObj, faceObj, canvasName)
 {
     var canvas = $('#' + canvasName)[0].getContext('2d');
-
+    
+    var orderedFaces = Array();
     for (var i in faceObj) {
         f = faceObj[i];
+        a = f[2];
+        b = f[3];
+        c = f[4];
+        vertexA = vertexObj[a];
+        vertexB = vertexObj[b];
+        vertexC = vertexObj[c];
+        z1 = vertexA[4];
+        z2 = vertexB[4];
+        z3 = vertexC[4];
+        zSum = z1 + z2 + z3;        
+        orderedItem = Array(i, zSum);        
+        orderedFaces[i] = orderedItem;
+    }
+    
+    orderedFaces.sort(function(a, b) {
+        return a[1] - b[1]
+    });
+    
+    for (var i in orderedFaces) {
+        faceIndex = orderedFaces[i][0];
+        f = faceObj[faceIndex];
         a = f[2];
         b = f[3];
         c = f[4];
@@ -139,7 +161,7 @@ function renderPolygon(vertexObj, faceObj, canvasName)
         x3 = vertexC[2] / scale;
         y3 = vertexC[3] / scale;
         canvas.beginPath();
-        canvas.fillStyle = 'rgba(' + i + ', 45, 21, 255)';
+        canvas.fillStyle = 'rgba(' + faceIndex + ', 45, 21, 255)';
         canvas.moveTo(x1 + horizontalShift, y1 + verticalShift);
         canvas.lineTo(x2 + horizontalShift, y2 + verticalShift);
         canvas.lineTo(x3 + horizontalShift, y3 + verticalShift);
