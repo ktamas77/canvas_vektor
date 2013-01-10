@@ -1,4 +1,4 @@
-var scale = 5;              // normalize object size
+var scale = 2.5;              // normalize object size
 var horizontalShift = 150;  // horizontal center
 var verticalShift = 150;    // vertical center
 
