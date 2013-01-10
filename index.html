@@ -7,7 +7,6 @@
     </head>
     <body>
         <div>
-            <canvas id="screen_vertex" width="300"" height="300"></canvas>
             <canvas id="screen_polygon" width="300" height="300"></canvas>
             <canvas id="screen_mesh" width="300" height="300"></canvas>
         </div>
@@ -24,18 +23,18 @@
                 canvas.fillStyle = '#fff';            
                 canvas.fillRect(0, 0, 300, 300);
             }
-            
+
             function loop() {
                 setTimeout(function ()
                 {
                     rotate = rotateZ(rotateX(rotateY(vertex, rotateAngleY), rotateAngleX), rotateAngleZ);
                     
-                    deleteCanvas('screen_vertex');
-                    renderVertex(rotate, 'screen_vertex');
                     deleteCanvas('screen_polygon');
                     renderPolygon(rotate, face, 'screen_polygon');
+                    
                     deleteCanvas('screen_mesh');
                     renderMesh(rotate, face, 'screen_mesh');
+                    
                     rotateAngleX += 5;
                     if (rotateAngleX >= sinMax) {
                         rotateAngleX -= sinMax;
@@ -48,12 +47,14 @@
                     if (rotateAngleZ >= sinMax) {
                         rotateAngleZ -= sinMax;
                     }
+                    
                     loop();
                 }, 10);
             }
-            
+
+            vertex = center3d(vertex);
+
             loop();            
-            
         </script>
     </body>
 </html>

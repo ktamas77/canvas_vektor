@@ -74,7 +74,7 @@ function shiftX(vertexObj, amount)
     for (var i in vertexObj) {
         v = vertexObj[i];
         targetObj[i] = Array();
-        targetObj[i][2] = v[2] + amount;
+        targetObj[i][2] = parseFloat(v[2]) + amount;
         targetObj[i][3] = v[3];
         targetObj[i][4] = v[4];
     }
@@ -88,7 +88,7 @@ function shiftY(vertexObj, amount)
         v = vertexObj[i];
         targetObj[i] = Array();
         targetObj[i][2] = v[2];
-        targetObj[i][3] = v[3] + amount;
+        targetObj[i][3] = parseFloat(v[3]) + amount;
         targetObj[i][4] = v[4];
     }
     return targetObj;
@@ -102,7 +102,7 @@ function shiftZ(vertexObj, amount)
         targetObj[i] = Array();
         targetObj[i][2] = v[2];
         targetObj[i][3] = v[3];
-        targetObj[i][4] = v[4] + amount;
+        targetObj[i][4] = parseFloat(v[4]) + amount;
     }
     return targetObj;
 }
@@ -190,4 +190,34 @@ function renderMesh(vertexObj, faceObj, canvasName)
         }
     }
 
+}
+
+function center3d(vertexObj)
+{
+    minX = 0;
+    maxX = 0;
+    minY = 0;
+    maxY = 0;
+    minZ = 0;
+    maxZ = 0;
+    for (var i in vertexObj) {
+        v = vertexObj[i];
+        x = v[2];
+        y = v[3];
+        z = v[4];
+        minX = Math.min(minX, x);
+        maxX = Math.max(maxX, x);
+        minY = Math.min(minY, y);
+        maxY = Math.max(maxY, y);
+        minZ = Math.min(minZ, z);
+        maxZ = Math.max(maxZ, z);
+    }
+    width = maxX-minX;
+    height = maxY-minY;
+    depth = maxZ-minZ;
+    centerX = minX + (width / 2);
+    centerY = minY + (height / 2);
+    centerZ = minZ + (depth / 2);
+    targetObj = shiftZ(shiftY(shiftX(vertexObj, -centerX), -centerY), -centerZ);
+    return targetObj;
 }
